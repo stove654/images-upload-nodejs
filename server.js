@@ -4,6 +4,7 @@
 // call the packages we need
 var express    = require('express');
 var bodyParser = require('body-parser');
+var multiparty = require('multiparty');
 var app        = express();
 
 // configure app
@@ -13,8 +14,8 @@ app.use(bodyParser.json());
 var port     = process.env.PORT || 8080; // set our port
 
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
-var Bear     = require('./app/models/bear');
+mongoose.connect('mongodb://localhost/image'); // connect to our database
+var Image     = require('./app/models/image');
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -36,19 +37,19 @@ router.get('/', function(req, res) {
 
 // on routes that end in /bears
 // ----------------------------------------------------
-router.route('/bears')
+router.route('/images')
 
     // create a bear (accessed at POST http://localhost:8080/bears)
     .post(function(req, res) {
 
-        var bear = new Bear();		// create a new instance of the Bear model
-        bear.name = req.body.name;  // set the bears name (comes from the request)
+        var image = new Image();		// create a new instance of the Bear model
+        image.name = req.body.name;  // set the bears name (comes from the request)
 
-        bear.save(function(err) {
+        image.save(function(err) {
             if (err)
                 res.send(err);
 
-            res.json({ message: 'Bear created!' });
+            res.json({ message: 'Image created!' });
         });
 
 
@@ -56,40 +57,40 @@ router.route('/bears')
 
     // get all the bears (accessed at GET http://localhost:8080/api/bears)
     .get(function(req, res) {
-        Bear.find(function(err, bears) {
+        Image.find(function(err, images) {
             if (err)
                 res.send(err);
 
-            res.json(bears);
+            res.json(images);
         });
     });
 
 // on routes that end in /bears/:bear_id
 // ----------------------------------------------------
-router.route('/bears/:bear_id')
+router.route('/images/:image_id')
 
     // get the bear with that id
     .get(function(req, res) {
-        Bear.findById(req.params.bear_id, function(err, bear) {
+        Image.findById(req.params.image_id, function(err, image) {
             if (err)
                 res.send(err);
-            res.json(bear);
+            res.json(image);
         });
     })
 
     // update the bear with this id
     .put(function(req, res) {
-        Bear.findById(req.params.bear_id, function(err, bear) {
+        Image.findById(req.params.image_id, function(err, image) {
 
             if (err)
                 res.send(err);
 
-            bear.name = req.body.name;
-            bear.save(function(err) {
+            image.name = req.body.name;
+            image.save(function(err) {
                 if (err)
                     res.send(err);
 
-                res.json({ message: 'Bear updated!' });
+                res.json({ message: 'image updated!' });
             });
 
         });
@@ -97,9 +98,9 @@ router.route('/bears/:bear_id')
 
     // delete the bear with this id
     .delete(function(req, res) {
-        Bear.remove({
-            _id: req.params.bear_id
-        }, function(err, bear) {
+        Image.remove({
+            _id: req.params.image_id
+        }, function(err, image) {
             if (err)
                 res.send(err);
 
